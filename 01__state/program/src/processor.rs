@@ -103,7 +103,7 @@ impl Processor {
             return Err(ProgramError::MissingRequiredSignature);
         }
         let settings = Settings::try_from_slice(&settings_account.data.borrow())?;
-        if settings.admin != admin_account.key.to_bytes() {
+        if settings.admin != admin_account.key.to_bytes() && settings.admin != [0; 32] {
             return Err(CounterError::AdminRequired.into());
         }
 

@@ -20,3 +20,16 @@ pub struct Settings {
     /// Step value for decrement
     pub dec_step: u32,
 }
+
+#[cfg(test)]
+mod test {
+    use borsh::BorshSerialize;
+
+    use crate::state::*;
+
+    #[test]
+    fn test_serialization() {
+        let data = Counter { last_user: [7_u8; 32], value: 9_999_999_999 }.try_to_vec().unwrap();
+        assert_eq!(data, [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 255, 227, 11, 84, 2, 0, 0, 0]);
+    }
+}
