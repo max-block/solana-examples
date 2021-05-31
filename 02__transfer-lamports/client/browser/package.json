@@ -1,0 +1,19 @@
+{
+  "name": "browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html --global main"
+  },
+  "keywords": [],
+  "author": "Max Block",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/web3.js": "^1.14.0"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5",
+    "typescript": "^4.2.4"
+  }
+}
