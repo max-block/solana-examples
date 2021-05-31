@@ -74,3 +74,100 @@ async fn test_process_inc() {
     let counter = Counter::try_from_slice(counter_account.data.as_slice()).unwrap();
     assert_eq!(counter.value, 7);
 }
+
+#[tokio::test]
+async fn test_process_dec() {
+    let mut test_env = TestEnv::new().await;
+
+    let input = CounterInstruction::Dec.try_to_vec().unwrap();
+    let mut transaction = Transaction::new_with_payer(
+        &[Instruction::new_with_bytes(
+            test_env.program_id,
+            &input,
+            vec![
+                AccountMeta::new(test_env.admin_keypair.pubkey(), true),
+                AccountMeta::new(test_env.counter_pubkey, false),
+                AccountMeta::new_readonly(test_env.settings_pubkey, false),
+            ],
+        )],
+        Some(&test_env.payer.pubkey()),
+    );
+    transaction.sign(&[&test_env.payer, &test_env.admin_keypair], test_env.recent_blockhash);
+    test_env.banks_client.process_transaction(transaction).await.unwrap();
+
+    let counter_account = test_env.banks_client.get_account(test_env.counter_pubkey).await.unwrap().unwrap();
+    let counter = Counter::try_from_slice(counter_account.data.as_slice()).unwrap();
+    assert_eq!(counter.value, -8);
+}
+
+#[tokio::test]
+async fn test_process_reset() {
+    let mut test_env = TestEnv::new().await;
+
+    // First dec the counter
+    let input = CounterInstruction::Dec.try_to_vec().unwrap();
+    let mut transaction = Transaction::new_with_payer(
+        &[Instruction::new_with_bytes(
+            test_env.program_id,
+            &input,
+            vec![
+                AccountMeta::new_readonly(test_env.admin_keypair.pubkey(), true),
+                AccountMeta::new(test_env.counter_pubkey, false),
+                AccountMeta::new_readonly(test_env.settings_pubkey, false),
+            ],
+        )],
+        Some(&test_env.payer.pubkey()),
+    );
+    transaction.sign(&[&test_env.payer, &test_env.admin_keypair], test_env.recent_blockhash);
+    test_env.banks_client.process_transaction(transaction).await.unwrap();
+
+    let counter_account = test_env.banks_client.get_account(test_env.counter_pubkey).await.unwrap().unwrap();
+    let counter = Counter::try_from_slice(counter_account.data.as_slice()).unwrap();
+    assert_eq!(counter.value, -8);
+
+    // Next reset the counter
+    let input = CounterInstruction::Reset.try_to_vec().unwrap();
+    let mut transaction = Transaction::new_with_payer(
+        &[Instruction::new_with_bytes(
+            test_env.program_id,
+            &input,
+            vec![
+                AccountMeta::new_readonly(test_env.admin_keypair.pubkey(), true),
+                AccountMeta::new(test_env.counter_pubkey, false),
+                AccountMeta::new_readonly(test_env.settings_pubkey, false),
+            ],
+        )],
+        Some(&test_env.payer.pubkey()),
+    );
+    transaction.sign(&[&test_env.payer, &test_env.admin_keypair], test_env.recent_blockhash);
+    test_env.banks_client.process_transaction(transaction).await.unwrap();
+
+    let counter_account = test_env.banks_client.get_account(test_env.counter_pubkey).await.unwrap().unwrap();
+    let counter = Counter::try_from_slice(counter_account.data.as_slice()).unwrap();
+    assert_eq!(counter.value, 0);
+}
+
+#[tokio::test]
+async fn test_process_update_settings() {
+    let mut test_env = TestEnv::new().await;
+
+    let input = CounterInstruction::UpdateSettings { inc_step: 1, dec_step: 2 }.try_to_vec().unwrap();
+    let mut transaction = Transaction::new_with_payer(
+        &[Instruction::new_with_bytes(
+            test_env.program_id,
+            &input,
+            vec![
+                AccountMeta::new_readonly(test_env.admin_keypair.pubkey(), true),
+                AccountMeta::new(test_env.settings_pubkey, false),
+            ],
+        )],
+        Some(&test_env.payer.pubkey()),
+    );
+    transaction.sign(&[&test_env.payer, &test_env.admin_keypair], test_env.recent_blockhash);
+    test_env.banks_client.process_transaction(transaction).await.unwrap();
+
+    let settings_account = test_env.banks_client.get_account(test_env.settings_pubkey).await.unwrap().unwrap();
+    let settings = Settings::try_from_slice(settings_account.data.as_slice()).unwrap();
+    assert_eq!(settings.inc_step, 1);
+    assert_eq!(settings.dec_step, 2);
+}

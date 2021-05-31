@@ -15,8 +15,9 @@ pub enum CounterInstruction {
     ///
     /// Accounts expected:
     ///
-    /// 0. `[writable]` counter_account, PDA
-    /// 1. `[]` settings_account, PDA
+    /// 0. `[signer]` user who inc the counter
+    /// 2. `[writable]` counter_account, PDA
+    /// 2. `[]` settings_account, PDA
     Dec,
 
     /// Reset the counter. Only admin can do it.
@@ -24,7 +25,8 @@ pub enum CounterInstruction {
     /// Accounts expected:
     ///
     /// 0. `[singer]` Admin of the counter
-    /// 0. `[writable]` counter_account, PDA
+    /// 1. `[writable]` counter_account, PDA
+    /// 2. `[]` settings_account, PDA
     Reset,
 
     /// Update settings for the counter. Only admin can do it
@@ -33,7 +35,7 @@ pub enum CounterInstruction {
     ///
     /// 0. `[signer]` Admin of the counter
     /// 1. `[writable]` settings_account, PDA
-    UpdateSettings { inc_step: i32, dec_step: i32 },
+    UpdateSettings { inc_step: u32, dec_step: u32 },
 }
 
 #[cfg(test)]
