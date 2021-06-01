@@ -20,15 +20,6 @@ pub enum CounterInstruction {
     /// 2. `[]` settings_account, PDA
     Dec,
 
-    /// Reset the counter. Only admin can do it.
-    ///
-    /// Accounts expected:
-    ///
-    /// 0. `[singer]` Admin of the counter
-    /// 1. `[writable]` counter_account, PDA
-    /// 2. `[]` settings_account, PDA
-    Reset,
-
     /// Update settings for the counter. Only admin can do it
     ///
     /// Accounts expected:
@@ -47,7 +38,6 @@ mod test {
     #[test]
     fn test_serialization() {
         let data = CounterInstruction::UpdateSettings { inc_step: 19, dec_step: 99 }.try_to_vec().unwrap();
-        assert_eq!(data, [3, 19, 0, 0, 0, 99, 0, 0, 0]);
+        assert_eq!(data, [2, 19, 0, 0, 0, 99, 0, 0, 0]);
     }
 }
-

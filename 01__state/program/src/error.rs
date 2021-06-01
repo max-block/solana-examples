@@ -5,6 +5,12 @@ use thiserror::Error;
 pub enum CounterError {
     #[error("Admin signature is requred")]
     AdminRequired,
+
+    #[error("Wrong counter PDA for this user")]
+    WrongCounterPDA,
+
+    #[error("Wrong settings PDA")]
+    WrongSettingsPDA,
 }
 
 impl From<CounterError> for ProgramError {
