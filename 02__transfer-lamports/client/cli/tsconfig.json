@@ -1,0 +1,20 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
+  "compilerOptions": {
+    "declaration": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "noImplicitAny": false
+  },
+  "include": [
+    "main.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

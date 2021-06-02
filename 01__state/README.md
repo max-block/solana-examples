@@ -1,4 +1,4 @@
-# Manage state in an on-chain Solana program
+# Manage state in a Solana on-chain program
 
 ### Localnet keys:
 - program: 9onZvMzqAFzSHJrLNVWfqLRFFQ5ZCGzNXB4PBxmp6z5Y

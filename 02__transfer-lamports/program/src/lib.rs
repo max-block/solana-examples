@@ -13,11 +13,7 @@ use solana_program::{
 
 entrypoint!(process_instruction);
 
-pub fn process_instruction(
-    _program_id: &Pubkey,
-    accounts: &[AccountInfo],
-    input: &[u8],
-) -> ProgramResult {
+pub fn process_instruction(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
     let account_info_iter = &mut accounts.iter();
     let alice = next_account_info(account_info_iter)?;
     let bob = next_account_info(account_info_iter)?;
@@ -29,10 +25,7 @@ pub fn process_instruction(
         .map(u64::from_le_bytes)
         .ok_or(ProgramError::InvalidInstructionData)?;
 
-    invoke(
-        &system_instruction::transfer(alice.key, bob.key, amount),
-        &[alice.clone(), bob.clone()],
-    )?;
-    msg!("transfer {} lamports from {:?} to {:?}", amount, alice.key, bob.key);
+    invoke(&system_instruction::transfer(alice.key, bob.key, amount), &[alice.clone(), bob.clone()])?;
+    msg!("transfer {} lamports from {:?} to {:?}: done", amount, alice.key, bob.key);
     Ok(())
 }
