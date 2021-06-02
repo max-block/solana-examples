@@ -1,8 +1,7 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
-use solana_program::msg;
 
-use crate::{COUNTER_SEED, SETTINGS_SEED};
+use crate::{id, COUNTER_SEED, SETTINGS_SEED};
 
 /// Each user has his own counter account.
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -15,15 +14,12 @@ pub struct Counter {
 }
 
 impl Counter {
-    pub fn get_counter_pubkey(program_id: &Pubkey, user: &Pubkey) -> Pubkey {
-        Pubkey::create_with_seed(user, COUNTER_SEED, program_id).unwrap()
+    pub fn get_counter_pubkey(user: &Pubkey) -> Pubkey {
+        Pubkey::create_with_seed(user, COUNTER_SEED, &id()).unwrap()
     }
 
-    pub fn is_ok_counter_pubkey(program_id: &Pubkey, user: &Pubkey, counter: &Pubkey) -> bool {
-        msg!("z0: program_id={}, user={}, counter={}", program_id, user, counter);
-        msg!("z1: {:?}", counter);
-        msg!("z2: {:?}", Counter::get_counter_pubkey(program_id, user));
-        return counter.to_bytes() == Self::get_counter_pubkey(program_id, user).to_bytes();
+    pub fn is_ok_counter_pubkey(user: &Pubkey, counter: &Pubkey) -> bool {
+        return counter.to_bytes() == Self::get_counter_pubkey(user).to_bytes();
     }
 }
 
@@ -41,12 +37,17 @@ pub struct Settings {
 }
 
 impl Settings {
-    pub fn get_settings_pubkey_with_bump(program_id: &Pubkey) -> (Pubkey, u8) {
-        Pubkey::find_program_address(&[SETTINGS_SEED.as_bytes()], program_id)
+    pub fn get_settings_pubkey_with_bump() -> (Pubkey, u8) {
+        Pubkey::find_program_address(&[SETTINGS_SEED.as_bytes()], &id())
     }
 
-    pub fn is_ok_settings_pubkey(program_id: &Pubkey, settings_pubkey: &Pubkey) -> bool {
-        let (pubkey, _) = Self::get_settings_pubkey_with_bump(program_id);
+    pub fn get_settings_pubkey() -> Pubkey {
+        let (pubkey, _) = Self::get_settings_pubkey_with_bump();
+        pubkey
+    }
+
+    pub fn is_ok_settings_pubkey(settings_pubkey: &Pubkey) -> bool {
+        let (pubkey, _) = Self::get_settings_pubkey_with_bump();
         return pubkey.to_bytes() == settings_pubkey.to_bytes();
     }
 }
@@ -58,7 +59,6 @@ mod test {
     use borsh::BorshSerialize;
 
     use crate::state::*;
-    use crate::id;
 
     #[test]
     fn test_serialization() {
@@ -74,14 +74,14 @@ mod test {
 
     #[test]
     fn test_get_settings_address_with_seed() {
-        let (address, bump) = Settings::get_settings_pubkey_with_bump(&id());
+        let (address, bump) = Settings::get_settings_pubkey_with_bump();
         assert_eq!(address, Pubkey::from_str("4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147").unwrap());
         assert_eq!(bump, 255);
     }
 
     #[test]
     fn test_get_counter_pubkey() {
-        let pubkey = Counter::get_counter_pubkey(&id(), &Pubkey::from_str("FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF").unwrap());
+        let pubkey = Counter::get_counter_pubkey(&Pubkey::from_str("FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF").unwrap());
         assert_eq!(pubkey, Pubkey::from_str("9JVaomeo7Ps8D41whGLkz1c1wzWGfKpk62Mopnf3B274").unwrap());
     }
 }

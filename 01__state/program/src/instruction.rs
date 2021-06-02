@@ -1,4 +1,14 @@
 use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::{
+    instruction::{AccountMeta, Instruction},
+    pubkey::Pubkey,
+    system_program, sysvar,
+};
+
+use crate::{
+    id,
+    state::{Counter, Settings},
+};
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub enum CounterInstruction {
@@ -24,11 +34,58 @@ pub enum CounterInstruction {
     ///
     /// Accounts expected:
     ///
-    /// 0. `[signer]` Admin of the counter
+    /// 0. `[signer, writable]` Admin of the counter
     /// 1. `[writable]` settings_account, PDA
     /// 2. `[]` Rent sysvar
     /// 3. `[]` System program
     UpdateSettings { admin: [u8; 32], inc_step: u32, dec_step: u32 },
+}
+
+impl CounterInstruction {
+    pub fn inc(user: &Pubkey) -> Instruction {
+        let data = CounterInstruction::Inc.try_to_vec().unwrap();
+        let counter_pubkey = Counter::get_counter_pubkey(user);
+        let (settings_pubkey, _) = Settings::get_settings_pubkey_with_bump();
+        Instruction::new_with_bytes(
+            id(),
+            data.as_slice(),
+            vec![
+                AccountMeta::new_readonly(user.clone(), true),
+                AccountMeta::new(counter_pubkey, false),
+                AccountMeta::new(settings_pubkey, false),
+            ],
+        )
+    }
+
+    pub fn dec(user: &Pubkey) -> Instruction {
+        let data = CounterInstruction::Dec.try_to_vec().unwrap();
+        let counter_pubkey = Counter::get_counter_pubkey(user);
+        let (settings_pubkey, _) = Settings::get_settings_pubkey_with_bump();
+        Instruction::new_with_bytes(
+            id(),
+            data.as_slice(),
+            vec![
+                AccountMeta::new_readonly(user.clone(), true),
+                AccountMeta::new(counter_pubkey, false),
+                AccountMeta::new(settings_pubkey, false),
+            ],
+        )
+    }
+
+    pub fn update_settings(admin: &Pubkey, new_admin: [u8; 32], inc_step: u32, dec_step: u32) -> Instruction {
+        let data = CounterInstruction::UpdateSettings { admin: new_admin, inc_step, dec_step }.try_to_vec().unwrap();
+        let (settings_pubkey, _) = Settings::get_settings_pubkey_with_bump();
+        Instruction::new_with_bytes(
+            id(),
+            data.as_slice(),
+            vec![
+                AccountMeta::new(admin.clone(), true),
+                AccountMeta::new(settings_pubkey, false),
+                AccountMeta::new_readonly(sysvar::rent::id(), false),
+                AccountMeta::new_readonly(system_program::id(), false),
+            ],
+        )
+    }
 }
 
 #[cfg(test)]

@@ -10,24 +10,24 @@ use solana_program::{msg, system_instruction};
 use crate::error::CounterError;
 use crate::instruction::CounterInstruction;
 use crate::state::{Counter, Settings};
-use crate::{id,  SETTINGS_SEED};
+use crate::{id, SETTINGS_SEED};
 
 pub struct Processor;
 
 impl Processor {
-    pub fn process(program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
+    pub fn process(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
         msg!("counter: {:?}", input);
         let instruction = CounterInstruction::try_from_slice(input)?;
         match instruction {
-            CounterInstruction::Inc => Self::process_inc(program_id, accounts),
-            CounterInstruction::Dec => Self::process_dec(program_id, accounts),
+            CounterInstruction::Inc => Self::process_inc(accounts),
+            CounterInstruction::Dec => Self::process_dec(accounts),
             CounterInstruction::UpdateSettings { admin, inc_step, dec_step } => {
-                Self::process_update_settings(program_id, accounts, admin, inc_step, dec_step)
+                Self::process_update_settings(accounts, admin, inc_step, dec_step)
             }
         }
     }
 
-    fn process_inc(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+    fn process_inc(accounts: &[AccountInfo]) -> ProgramResult {
         msg!("process_inc");
         let acc_iter = &mut accounts.iter();
         let user_info = next_account_info(acc_iter)?;
@@ -39,12 +39,10 @@ impl Processor {
             msg!("error: missing required signature");
             return Err(ProgramError::MissingRequiredSignature);
         }
-        if !Counter::is_ok_counter_pubkey(program_id, user_info.key, counter_info.key) {
-            msg!("error: wrong counter PDA");
+        if !Counter::is_ok_counter_pubkey(user_info.key, counter_info.key) {
             return Err(CounterError::WrongCounterPDA.into());
         }
-        if !Settings::is_ok_settings_pubkey(program_id, settings_info.key) {
-            msg!("error: wrong settings PDA");
+        if !Settings::is_ok_settings_pubkey(settings_info.key) {
             return Err(CounterError::WrongSettingsPDA.into());
         }
 
@@ -59,7 +57,7 @@ impl Processor {
         Ok(())
     }
 
-    fn process_dec(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+    fn process_dec(accounts: &[AccountInfo]) -> ProgramResult {
         msg!("process_dec");
         let acc_iter = &mut accounts.iter();
         let user_info = next_account_info(acc_iter)?;
@@ -70,10 +68,10 @@ impl Processor {
         if !user_info.is_signer {
             return Err(ProgramError::MissingRequiredSignature);
         }
-        if !Counter::is_ok_counter_pubkey(program_id, user_info.key, counter_info.key) {
+        if !Counter::is_ok_counter_pubkey(user_info.key, counter_info.key) {
             return Err(CounterError::WrongCounterPDA.into());
         }
-        if !Settings::is_ok_settings_pubkey(program_id, settings_info.key) {
+        if !Settings::is_ok_settings_pubkey(settings_info.key) {
             return Err(CounterError::WrongSettingsPDA.into());
         }
 
@@ -89,22 +87,15 @@ impl Processor {
         Ok(())
     }
 
-    fn process_update_settings(
-        program_id: &Pubkey,
-        accounts: &[AccountInfo],
-        admin: [u8; 32],
-        inc_step: u32,
-        dec_step: u32,
-    ) -> ProgramResult {
+    fn process_update_settings(accounts: &[AccountInfo], admin: [u8; 32], inc_step: u32, dec_step: u32) -> ProgramResult {
         msg!("process_update_settings: admin={:?} inc_step={}, dec_step={}", admin, inc_step, dec_step);
         let acc_iter = &mut accounts.iter();
         let admin_info = next_account_info(acc_iter)?;
         let settings_info = next_account_info(acc_iter)?;
         let rent_info = next_account_info(acc_iter)?;
         let system_program_info = next_account_info(acc_iter)?;
-        
 
-        let (settings_pubkey, bump_seed) = Settings::get_settings_pubkey_with_bump(program_id);
+        let (settings_pubkey, bump_seed) = Settings::get_settings_pubkey_with_bump();
         if settings_pubkey.to_bytes() != settings_info.key.to_bytes() {
             msg!("Error: settings address derivation mismatch");
             return Err(ProgramError::InvalidArgument);

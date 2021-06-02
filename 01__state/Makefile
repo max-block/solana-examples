@@ -12,7 +12,7 @@ deploy:
 	solana program deploy program/target/deploy/counter.so -u localhost --program-id localnet/program.json
 
 
-client:
+client: airdrop deploy
 	cd client; ./node_modules/.bin/ts-node src/main.ts
 
 

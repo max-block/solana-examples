@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["Max Block <maxblock@pm.me>"]
 edition = "2018"
 
+[features]
+no-entrypoint = []
+test-bpf = []
 
 [dependencies]
 borsh = "0.9.0"

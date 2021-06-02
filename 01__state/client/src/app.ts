@@ -20,6 +20,10 @@ import {
 } from "./serialization";
 import BN from "bn.js";
 
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export class App {
     static counterSeed = "counter"
     static settingsSeed = "settings"
@@ -49,6 +53,11 @@ export class App {
             console.error("Counter is not deployed. Deploy it first.")
             process.exit(1)
         }
+        console.log("program", this.programKeypair.publicKey.toBase58())
+        console.log("admin", this.adminKeypair.publicKey.toBase58())
+        console.log("user", this.userKeypair.publicKey.toBase58())
+        console.log("settings", this.settingsPubkey.toBase58())
+        console.log("counter", this.settingsPubkey.toBase58())
     }
 
 
@@ -65,31 +74,9 @@ export class App {
         })
 
         const tx = new Transaction().add(updateSettingsIx)
-        const res = await this.connection.sendTransaction(tx, [this.userKeypair, this.adminKeypair])
-        console.log("update counter settings tx", res)
-    }
-
-    async createCounterAccount() {
-        if (await this.connection.getAccountInfo(this.counterPubkey)) {
-            console.log("counter account is created already", this.counterPubkey.toBase58())
-            return
-        }
-
-        const data = encodeCounter(0, new BN(0))
-        const lamports = await this.connection.getMinimumBalanceForRentExemption(data.length)
-        const createAccountIx = SystemProgram.createAccountWithSeed({
-            fromPubkey: this.userKeypair.publicKey,
-            basePubkey: this.userKeypair.publicKey,
-            seed: App.counterSeed,
-            newAccountPubkey: this.counterPubkey,
-            space: data.length,
-            lamports: lamports,
-            programId: this.programKeypair.publicKey,
-        })
-
-        const tx = new Transaction().add(createAccountIx)
-        const res = await this.connection.sendTransaction(tx, [this.userKeypair])
-        console.log("counter account creating", res)
+        const txHash = await this.connection.sendTransaction(tx, [this.userKeypair, this.adminKeypair])
+        console.log("update settings tx", txHash)
+        await delay(3000)
     }
 
 
@@ -111,7 +98,19 @@ export class App {
         return decodeSettings(account.data)
     }
 
-    async incCounter() {
+    async createCounterAndInc() {
+        const data = encodeCounter(0, new BN(0))
+        const lamports = await this.connection.getMinimumBalanceForRentExemption(data.length)
+        const createAccountIx = SystemProgram.createAccountWithSeed({
+            fromPubkey: this.userKeypair.publicKey,
+            basePubkey: this.userKeypair.publicKey,
+            seed: App.counterSeed,
+            newAccountPubkey: this.counterPubkey,
+            space: data.length,
+            lamports: lamports,
+            programId: this.programKeypair.publicKey,
+        })
+
         const incIx = new TransactionInstruction({
             programId: this.programKeypair.publicKey,
             keys: [
@@ -122,9 +121,10 @@ export class App {
             data: encodeIncIx(),
         })
 
-        const tx = new Transaction().add(incIx)
-        const res = await this.connection.sendTransaction(tx, [this.userKeypair])
-        console.log("inc counter tx", res)
+        const tx = new Transaction().add(createAccountIx, incIx)
+        const res = await this.connection.sendTransaction(tx, [this.userKeypair], {preflightCommitment: "confirmed"})
+        console.log("create counter and inc tx", res)
+        await delay(3000)
     }
 
     async decCounter() {
@@ -139,8 +139,9 @@ export class App {
         })
 
         const tx = new Transaction().add(decIx)
-        const res = await this.connection.sendTransaction(tx, [this.userKeypair])
+        const res = await this.connection.sendTransaction(tx, [this.userKeypair], {preflightCommitment: "confirmed"})
         console.log("dec counter tx", res)
+        await delay(3000)
     }
 
 
