@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html --global main"
+    "start": "parcel src/index.html --global main"
   },
   "keywords": [],
   "author": "Max Block",
   "license": "ISC",
   "dependencies": {
+    "@project-serum/sol-wallet-adapter": "^0.2.0",
     "@solana/web3.js": "^1.14.0"
   },
   "devDependencies": {
