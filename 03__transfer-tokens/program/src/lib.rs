@@ -1,31 +1,63 @@
-use std::convert::TryInto;
-
+use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint,
     entrypoint::ProgramResult,
     msg,
     program::invoke,
-    program_error::ProgramError,
     pubkey::Pubkey,
-    system_instruction,
 };
 
 entrypoint!(process_instruction);
 
+#[derive(Debug, BorshSerialize, BorshDeserialize)]
+pub enum Instruction {
+    Transfer { amount: u64 },
+    Approve { amount: u64 },
+}
+
+/// Accounts expected:
+/// 0. `[signer, writable]` from
+/// 1. `[writable]` from_token
+/// 2. `[writable]` to_token
+/// 3. `[]` token program
 pub fn process_instruction(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
-    let account_info_iter = &mut accounts.iter();
-    let alice = next_account_info(account_info_iter)?;
-    let bob = next_account_info(account_info_iter)?;
-    // the third account is SystemProgram. Don't forget it
+    msg!("input: {:?}", input);
+    let acc_iter = &mut accounts.iter();
+    let from_info = next_account_info(acc_iter)?;
+    let from_token_info = next_account_info(acc_iter)?;
+    let to_token_info = next_account_info(acc_iter)?;
+    let token_info = next_account_info(acc_iter)?;
+    // It's a good idea to check all accounts in a real app...
 
-    let amount = input
-        .get(..8)
-        .and_then(|slice| slice.try_into().ok())
-        .map(u64::from_le_bytes)
-        .ok_or(ProgramError::InvalidInstructionData)?;
+    match Instruction::try_from_slice(input)? {
+        Instruction::Transfer { amount } => {
+            msg!("transfer: {}", amount);
+            let ix = spl_token::instruction::transfer(
+                token_info.key,
+                from_token_info.key,
+                to_token_info.key,
+                from_info.key,
+                &[from_info.key],
+                amount,
+            )?;
+            invoke(&ix, &[from_token_info.clone(), to_token_info.clone(), from_info.clone(), token_info.clone()])?;
+            msg!("transfer from {} to {} amount {}: done", from_token_info.key, to_token_info.key, amount);
+        }
+        Instruction::Approve { amount } => {
+            msg!("approve: {}", amount);
+            let ix = spl_token::instruction::approve(
+                token_info.key,
+                from_token_info.key,
+                to_token_info.key,
+                from_info.key,
+                &[from_info.key],
+                amount,
+            )?;
+            invoke(&ix, &[from_token_info.clone(), to_token_info.clone(), from_info.clone(), token_info.clone()])?;
+            msg!("approve from {} to {} amount {}: done", from_token_info.key, to_token_info.key, amount);
+        }
+    }
 
-    invoke(&system_instruction::transfer(alice.key, bob.key, amount), &[alice.clone(), bob.clone()])?;
-    msg!("transfer {} lamports from {:?} to {:?}: done", amount, alice.key, bob.key);
     Ok(())
 }

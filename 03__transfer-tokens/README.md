@@ -8,5 +8,6 @@
 - bob: 9C8ARBpAqcmoDfqZTDtvB1JgZC7gjvcq48xRJoR7Wpeq
 - bob token account: 82SyqQyffa3yeUbuCfcfrHGg3LjdKr919aUqVT7uXkez
 - carol: 2EheLY8aWQcKPsSXpTs7teiwtBume8gLRaFQzB4HHxJP
+- carol token account: Eau9odNYvqtAFmAVJx2wcH358gd4PAeshF1X8VEyMHWb
 
 

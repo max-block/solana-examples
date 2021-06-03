@@ -10,6 +10,7 @@
   "author": "Max Block",
   "license": "ISC",
   "dependencies": {
+    "@solana/spl-token": "^0.1.5",
     "@solana/web3.js": "^1.15.0"
   },
   "devDependencies": {

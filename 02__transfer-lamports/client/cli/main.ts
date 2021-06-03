@@ -15,7 +15,7 @@ async function main() {
     const connection = new Connection("http://localhost:8899", "confirmed")
 
     // encode 0.5 SOL as an input_data
-    const data = Buffer.alloc(64);
+    const data = Buffer.alloc(8);
     lo.ns64("value").encode(new BN("500000000"), data)
 
 
