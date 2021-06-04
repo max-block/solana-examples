@@ -1,3 +1,50 @@
-### Links:
-- https://github.com/paul-schaaf/solana-escrow
-- https://github.com/paul-schaaf/escrow-ui
+# spl-examples
+List of on-chain Solana programs which demonstrate different aspects of Solana architecture.
+
+----
+
+## 01__state
+It's a counter program. Each user has his own counter. There is one settings account which only admin can manage.
+
+*Topics:*
+- Basics about Solana programming model   
+- Serialization and deserialization instruction_data and state in Rust using `borsh`
+- Serialization and deserialization instruction_data and state on the client side using `buffer-layout`
+- Unit and functional test for on-chain Solana programs
+- Client for on-chain Solana programs using `@solana/web3.js`
+- Program Derived Addresses
+- Create accounts inside on-chain programs
+
+YouTube link (in Russian): *work in progress*  
+
+---
+
+## 02__transfer-lamports
+Transfer lamports inside a Solana on-chain program
+
+*Topics:*
+- Invoke system instructions inside on-chain programs
+- Cross-Program Invocations
+- Privilege extension
+- Phantom and Sollet wallet integrations
+- Secure problem of Solana wallets
+
+YouTube link (in Russian): *work in progress*
+
+---
+
+## 03__transfer-tokens
+Transfer and approve SPL tokens inside a Solana on-chain program
+
+*Topics:*
+- SPL Token model
+
+YouTube link (in Russian): *work in progress*
+
+---
+
+
+### TODO:
+- Pseudo random
+- Python Solana client
+- Compare Solana vs Ethereum

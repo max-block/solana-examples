@@ -1,4 +1,4 @@
-# Transfer SPL tokens inside a Solana on-chain program 
+# Transfer and approve SPL tokens inside a Solana on-chain program 
 
 ### Localnet keys:
 - program_id: Cf2FH5TEV6T511C4nJDyuyuaVc34vDA66rmmkwquyWeM
