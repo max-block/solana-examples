@@ -22,12 +22,12 @@ YouTube link (in Russian): *work in progress*
 ## 02__transfer-lamports
 Transfer lamports inside a Solana on-chain program
 
-*Topics:*
+_Topics:_
 - Invoke system instructions inside on-chain programs
 - Cross-Program Invocations
 - Privilege extension
 - Phantom and Sollet wallet integrations
-- Secure problem of Solana wallets
+- Secure issue with CPI and signers
 
 YouTube link (in Russian): *work in progress*
 
@@ -37,7 +37,9 @@ YouTube link (in Russian): *work in progress*
 Transfer and approve SPL tokens inside a Solana on-chain program
 
 *Topics:*
-- SPL Token model
+- SPL Token
+- SPL Associated Token Account Program
+- @solana/spl-token
 
 YouTube link (in Russian): *work in progress*
 

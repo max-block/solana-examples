@@ -1,6 +1,19 @@
 # Manage state in a Solana on-chain program
 It's a counter program. Each user has his own counter. There is one settings account which only admin can manage.
 
+
+_Topics:_
+- Basics about Solana programming model   
+- Serialization and deserialization instruction_data and state in Rust using `borsh`
+- Serialization and deserialization instruction_data and state on the client side using `buffer-layout`
+- Unit and functional test for on-chain Solana programs
+- Client for on-chain Solana programs using `@solana/web3.js`
+- Program Derived Addresses
+- Create accounts inside on-chain programs
+
+YouTube link (in Russian): *work in progress*  
+
+
 ### Instruction
 ```rust
 pub enum CounterInstruction {
@@ -54,12 +67,13 @@ pub struct Settings {
 
 
 ### Localnet keys:
-- program: 9onZvMzqAFzSHJrLNVWfqLRFFQ5ZCGzNXB4PBxmp6z5Y
-- admin: EG7uy9FCe4AxL9AavEA1nXDfo2AoBo1ZtBCV224hmoub
-- user: FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF
-- settings: 4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147
-- counter: 4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147
-
+```
+program: 9onZvMzqAFzSHJrLNVWfqLRFFQ5ZCGzNXB4PBxmp6z5Y
+admin: EG7uy9FCe4AxL9AavEA1nXDfo2AoBo1ZtBCV224hmoub
+user: FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF
+settings: 4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147
+counter: 4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147
+```
 
 
 ### Usage:
@@ -69,9 +83,6 @@ $ make localnet-validator
 
 # Aidrop localnet accounts
 $ make localnet-init
-
-# Test the Solana on-chain program
-$ make test
 
 # Deploy the Solana on-chain program
 $ make deploy

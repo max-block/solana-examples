@@ -13,11 +13,19 @@ use solana_program::{
 
 entrypoint!(process_instruction);
 
-pub fn process_instruction(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
-    let account_info_iter = &mut accounts.iter();
-    let alice = next_account_info(account_info_iter)?;
-    let bob = next_account_info(account_info_iter)?;
-    // the third account is SystemProgram. Don't forget it
+/// Accounts expected:
+/// 0. `[signer, writable]` Debit lamports from this account
+/// 1. `[writable]` Credit lamports to this accoun
+/// 2. `[]` System program
+pub fn process_instruction(
+    _program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    input: &[u8],
+) -> ProgramResult {
+    let acc_iter = &mut accounts.iter();
+    let alice_info = next_account_info(acc_iter)?;
+    let bob_info = next_account_info(acc_iter)?;
+    // the third account is SystemProgram. Don't forget it in a client
 
     let amount = input
         .get(..8)
@@ -25,7 +33,15 @@ pub fn process_instruction(_program_id: &Pubkey, accounts: &[AccountInfo], input
         .map(u64::from_le_bytes)
         .ok_or(ProgramError::InvalidInstructionData)?;
 
-    invoke(&system_instruction::transfer(alice.key, bob.key, amount), &[alice.clone(), bob.clone()])?;
-    msg!("transfer {} lamports from {:?} to {:?}: done", amount, alice.key, bob.key);
+    invoke(
+        &system_instruction::transfer(alice_info.key, bob_info.key, amount),
+        &[alice_info.clone(), bob_info.clone()],
+    )?;
+    msg!(
+        "transfer {} lamports from {:?} to {:?}: done",
+        amount,
+        alice_info.key,
+        bob_info.key
+    );
     Ok(())
 }
