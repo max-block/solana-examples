@@ -19,7 +19,7 @@ impl Counter {
     }
 
     pub fn is_ok_counter_pubkey(user: &Pubkey, counter: &Pubkey) -> bool {
-        return counter.to_bytes() == Self::get_counter_pubkey(user).to_bytes();
+        counter.to_bytes() == Self::get_counter_pubkey(user).to_bytes()
     }
 }
 
@@ -48,7 +48,7 @@ impl Settings {
 
     pub fn is_ok_settings_pubkey(settings_pubkey: &Pubkey) -> bool {
         let (pubkey, _) = Self::get_settings_pubkey_with_bump();
-        return pubkey.to_bytes() == settings_pubkey.to_bytes();
+        pubkey.to_bytes() == settings_pubkey.to_bytes()
     }
 }
 
@@ -62,12 +62,14 @@ mod test {
 
     #[test]
     fn test_serialization() {
-        let data = Settings { admin: [7_u8; 32], inc_step: 19, dec_step: 99 }.try_to_vec().unwrap();
+        let data = Settings { admin: [7_u8; 32], inc_step: 19, dec_step: 99 }
+            .try_to_vec()
+            .unwrap();
         assert_eq!(
             data,
             [
-                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 19, 0, 0, 0, 99,
-                0, 0, 0
+                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 19, 0, 0, 0, 99, 0, 0, 0
             ]
         );
     }
@@ -75,13 +77,24 @@ mod test {
     #[test]
     fn test_get_settings_address_with_seed() {
         let (address, bump) = Settings::get_settings_pubkey_with_bump();
-        assert_eq!(address, Pubkey::from_str("4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147").unwrap());
+        assert_eq!(
+            address,
+            Pubkey::from_str("4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147")
+                .unwrap()
+        );
         assert_eq!(bump, 255);
     }
 
     #[test]
     fn test_get_counter_pubkey() {
-        let pubkey = Counter::get_counter_pubkey(&Pubkey::from_str("FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF").unwrap());
-        assert_eq!(pubkey, Pubkey::from_str("9JVaomeo7Ps8D41whGLkz1c1wzWGfKpk62Mopnf3B274").unwrap());
+        let pubkey = Counter::get_counter_pubkey(
+            &Pubkey::from_str("FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF")
+                .unwrap(),
+        );
+        assert_eq!(
+            pubkey,
+            Pubkey::from_str("9JVaomeo7Ps8D41whGLkz1c1wzWGfKpk62Mopnf3B274")
+                .unwrap()
+        );
     }
 }

@@ -10,30 +10,24 @@ use crate::{
     state::{Counter, Settings},
 };
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]
 pub enum CounterInstruction {
-    /// Increment the counter
-    ///
+    /// Increment the counter.
     /// Accounts expected:
-    ///
-    /// 0. `[signer]` user who inc the counter
+    /// 0. `[signer]` owner of the counter
     /// 1. `[writable]` counter_account, PDA
     /// 2. `[]` settings_account, PDA
     Inc,
 
-    /// Decrement the counter
-    ///
+    /// Decrement the counter.
     /// Accounts expected:
-    ///
-    /// 0. `[signer]` user who inc the counter
+    /// 0. `[signer]` owner the counter
     /// 2. `[writable]` counter_account, PDA
     /// 2. `[]` settings_account, PDA
     Dec,
 
-    /// Update settings for the counter. Only admin can do it
-    ///
+    /// Update settings for the counter. Only admin can do it.
     /// Accounts expected:
-    ///
     /// 0. `[signer, writable]` Admin of the counter
     /// 1. `[writable]` settings_account, PDA
     /// 2. `[]` Rent sysvar
@@ -43,14 +37,13 @@ pub enum CounterInstruction {
 
 impl CounterInstruction {
     pub fn inc(user: &Pubkey) -> Instruction {
-        let data = CounterInstruction::Inc.try_to_vec().unwrap();
         let counter_pubkey = Counter::get_counter_pubkey(user);
         let (settings_pubkey, _) = Settings::get_settings_pubkey_with_bump();
-        Instruction::new_with_bytes(
+        Instruction::new_with_borsh(
             id(),
-            data.as_slice(),
+            &CounterInstruction::Inc,
             vec![
-                AccountMeta::new_readonly(user.clone(), true),
+                AccountMeta::new_readonly(*user, true),
                 AccountMeta::new(counter_pubkey, false),
                 AccountMeta::new(settings_pubkey, false),
             ],
@@ -58,28 +51,35 @@ impl CounterInstruction {
     }
 
     pub fn dec(user: &Pubkey) -> Instruction {
-        let data = CounterInstruction::Dec.try_to_vec().unwrap();
         let counter_pubkey = Counter::get_counter_pubkey(user);
         let (settings_pubkey, _) = Settings::get_settings_pubkey_with_bump();
-        Instruction::new_with_bytes(
+        Instruction::new_with_borsh(
             id(),
-            data.as_slice(),
+            &CounterInstruction::Dec,
             vec![
-                AccountMeta::new_readonly(user.clone(), true),
+                AccountMeta::new_readonly(*user, true),
                 AccountMeta::new(counter_pubkey, false),
                 AccountMeta::new(settings_pubkey, false),
             ],
         )
     }
 
-    pub fn update_settings(admin: &Pubkey, new_admin: [u8; 32], inc_step: u32, dec_step: u32) -> Instruction {
-        let data = CounterInstruction::UpdateSettings { admin: new_admin, inc_step, dec_step }.try_to_vec().unwrap();
+    pub fn update_settings(
+        admin: &Pubkey,
+        new_admin: [u8; 32],
+        inc_step: u32,
+        dec_step: u32,
+    ) -> Instruction {
         let (settings_pubkey, _) = Settings::get_settings_pubkey_with_bump();
-        Instruction::new_with_bytes(
+        Instruction::new_with_borsh(
             id(),
-            data.as_slice(),
+            &CounterInstruction::UpdateSettings {
+                admin: new_admin,
+                inc_step,
+                dec_step,
+            },
             vec![
-                AccountMeta::new(admin.clone(), true),
+                AccountMeta::new(*admin, true),
                 AccountMeta::new(settings_pubkey, false),
                 AccountMeta::new_readonly(sysvar::rent::id(), false),
                 AccountMeta::new_readonly(system_program::id(), false),
@@ -100,7 +100,11 @@ mod test {
     #[test]
     fn test_serialization() {
         let data = CounterInstruction::UpdateSettings {
-            admin: Pubkey::from_str("EG7uy9FCe4AxL9AavEA1nXDfo2AoBo1ZtBCV224hmoub").unwrap().to_bytes(),
+            admin: Pubkey::from_str(
+                "EG7uy9FCe4AxL9AavEA1nXDfo2AoBo1ZtBCV224hmoub",
+            )
+            .unwrap()
+            .to_bytes(),
             inc_step: 19,
             dec_step: 99,
         }
@@ -109,8 +113,9 @@ mod test {
         assert_eq!(
             data,
             [
-                2, 197, 7, 117, 129, 90, 151, 178, 48, 248, 208, 199, 5, 17, 134, 51, 183, 155, 153, 209, 86, 177, 138, 127, 133,
-                1, 191, 178, 128, 179, 23, 157, 98, 19, 0, 0, 0, 99, 0, 0, 0
+                2, 197, 7, 117, 129, 90, 151, 178, 48, 248, 208, 199, 5, 17,
+                134, 51, 183, 155, 153, 209, 86, 177, 138, 127, 133, 1, 191,
+                178, 128, 179, 23, 157, 98, 19, 0, 0, 0, 99, 0, 0, 0
             ]
         );
     }
