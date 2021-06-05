@@ -15,7 +15,7 @@ entrypoint!(process_instruction);
 
 /// Accounts expected:
 /// 0. `[signer, writable]` Debit lamports from this account
-/// 1. `[writable]` Credit lamports to this accoun
+/// 1. `[writable]` Credit lamports to this account
 /// 2. `[]` System program
 pub fn process_instruction(
     _program_id: &Pubkey,

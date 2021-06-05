@@ -10,10 +10,11 @@ It's a counter program. Each user has his own counter. There is one settings acc
 - Basics about Solana programming model   
 - Serialization and deserialization instruction_data and state in Rust using `borsh`
 - Serialization and deserialization instruction_data and state on the client side using `buffer-layout`
-- Unit and functional test for on-chain Solana programs
-- Client for on-chain Solana programs using `@solana/web3.js`
+- Unit and functional tests for on-chain Solana programs
+- Using Solana client `@solana/web3.js`
 - Program Derived Addresses
 - Create accounts inside on-chain programs
+- Deploy on testnet and check it using Solana explorer
 
 YouTube link (in Russian): *work in progress*  
 
@@ -27,7 +28,6 @@ _Topics:_
 - Cross-Program Invocations
 - Privilege extension
 - Phantom and Sollet wallet integrations
-- Secure issue with CPI and signers
 
 YouTube link (in Russian): *work in progress*
 
@@ -40,6 +40,7 @@ Transfer and approve SPL tokens inside a Solana on-chain program
 - SPL Token
 - SPL Associated Token Account Program
 - @solana/spl-token
+- https://github.com/solana-labs/token-list
 
 YouTube link (in Russian): *work in progress*
 

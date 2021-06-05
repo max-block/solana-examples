@@ -4,12 +4,17 @@ localnet-validator:
 	solana-test-validator -r --ledger localnet/ledger
 
 localnet-init:
-	solana airdrop 1 CD6To88A4KrApbnDUkHrwpjMY5ufgPpVQzm9rRX5d3ro -u localhost
-	solana airdrop 1 9C8ARBpAqcmoDfqZTDtvB1JgZC7gjvcq48xRJoR7Wpeq -u localhost
+	solana airdrop 1 localnet/alice.json -u localhost
+	solana airdrop 1 localnet/bob.json -u localhost
 
 deploy:
 	cd program; cargo build-bpf
 	solana program deploy program/target/deploy/program.so -u localhost --program-id localnet/program.json
+
+
+testnet-deploy:
+	cd program; cargo build-bpf
+	solana program deploy program/target/deploy/program.so -u testnet --program-id localnet/program.json --keypair localnet/alice.json --upgrade-authority localnet/alice.json
 
 
 client-cli:

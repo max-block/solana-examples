@@ -6,7 +6,6 @@ _Topics:_
 - Cross-Program Invocations
 - Privilege extension
 - Phantom and Sollet wallet integrations
-- Secure issue with CPI and signers
 
 YouTube link (in Russian): *work in progress*
 

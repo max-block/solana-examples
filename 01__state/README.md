@@ -6,10 +6,11 @@ _Topics:_
 - Basics about Solana programming model   
 - Serialization and deserialization instruction_data and state in Rust using `borsh`
 - Serialization and deserialization instruction_data and state on the client side using `buffer-layout`
-- Unit and functional test for on-chain Solana programs
-- Client for on-chain Solana programs using `@solana/web3.js`
+- Unit and functional tests for on-chain Solana programs
+- Using Solana client `@solana/web3.js`
 - Program Derived Addresses
 - Create accounts inside on-chain programs
+- Deploy on testnet and check it using Solana explorer
 
 YouTube link (in Russian): *work in progress*  
 
@@ -85,7 +86,7 @@ $ make localnet-validator
 $ make localnet-init
 
 # Deploy the Solana on-chain program
-$ make deploy
+$ make localnet-deploy
 
 # Run the client
 $ make client 

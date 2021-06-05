@@ -1,11 +1,5 @@
 import "regenerator-runtime/runtime"
-import {
-  Connection,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-  TransactionInstruction,
-} from "@solana/web3.js"
+import {Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction,} from "@solana/web3.js"
 import Wallet from "@project-serum/sol-wallet-adapter"
 import lo from "buffer-layout"
 import BN from "bn.js"
@@ -16,7 +10,8 @@ declare global {
   }
 }
 
-const connection = new Connection("http://localhost:8899")
+// const connection = new Connection("http://localhost:8899")
+const connection = new Connection("https://testnet.solana.com")
 let solletWallet = new Wallet("https://www.sollet.io")
 solletWallet.on("connect", (publicKey) =>
   console.log("sollet connected", publicKey.toBase58())
