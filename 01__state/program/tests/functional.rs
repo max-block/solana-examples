@@ -1,8 +1,6 @@
 #![cfg(feature = "test-bpf")]
 use borsh::{BorshDeserialize, BorshSerialize};
-use counter::{
-    entrypoint::process_instruction, id, instruction::CounterInstruction,
-};
+use counter::{entrypoint::process_instruction, id, instruction::CounterInstruction};
 use counter::{
     state::{Counter, Settings},
     COUNTER_SEED,
@@ -21,8 +19,7 @@ struct Env {
 
 impl Env {
     async fn new() -> Self {
-        let program_test =
-            ProgramTest::new("counter", id(), processor!(process_instruction));
+        let program_test = ProgramTest::new("counter", id(), processor!(process_instruction));
         let mut ctx = program_test.start_with_context().await;
 
         let admin = Keypair::new();
@@ -64,19 +61,14 @@ impl Env {
         );
         ctx.banks_client.process_transaction(tx).await.unwrap();
 
-        let acc = ctx
-            .banks_client
-            .get_account(Settings::get_settings_pubkey())
-            .await
-            .unwrap()
-            .unwrap();
+        let acc =
+            ctx.banks_client.get_account(Settings::get_settings_pubkey()).await.unwrap().unwrap();
         let settings = Settings::try_from_slice(acc.data.as_slice()).unwrap();
         assert_eq!(settings.inc_step, 1);
         assert_eq!(settings.dec_step, 2);
 
         // init counter account
-        let space =
-            Counter { counter: 0, value: 0 }.try_to_vec().unwrap().len();
+        let space = Counter { counter: 0, value: 0 }.try_to_vec().unwrap().len();
         let rent = ctx.banks_client.get_rent().await.unwrap();
         let lamports = rent.minimum_balance(space);
         let ix = system_instruction::create_account_with_seed(
@@ -165,13 +157,8 @@ async fn test_update_settings() {
     );
     env.ctx.banks_client.process_transaction(tx).await.unwrap();
 
-    let acc = env
-        .ctx
-        .banks_client
-        .get_account(Settings::get_settings_pubkey())
-        .await
-        .unwrap()
-        .unwrap();
+    let acc =
+        env.ctx.banks_client.get_account(Settings::get_settings_pubkey()).await.unwrap().unwrap();
     let settings = Settings::try_from_slice(acc.data.as_slice()).unwrap();
     assert_eq!(settings.inc_step, 11);
     assert_eq!(settings.dec_step, 22);

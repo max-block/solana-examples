@@ -9,7 +9,7 @@ pub struct Counter {
     /// Increment this field every time by 1
     pub counter: u32,
 
-    /// Value of the counter
+    /// Value of a counter
     pub value: i64,
 }
 
@@ -62,14 +62,12 @@ mod test {
 
     #[test]
     fn test_serialization() {
-        let data = Settings { admin: [7_u8; 32], inc_step: 19, dec_step: 99 }
-            .try_to_vec()
-            .unwrap();
+        let data = Settings { admin: [7_u8; 32], inc_step: 19, dec_step: 99 }.try_to_vec().unwrap();
         assert_eq!(
             data,
             [
-                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 19, 0, 0, 0, 99, 0, 0, 0
+                7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+                7, 7, 7, 7, 19, 0, 0, 0, 99, 0, 0, 0
             ]
         );
     }
@@ -79,8 +77,7 @@ mod test {
         let (address, bump) = Settings::get_settings_pubkey_with_bump();
         assert_eq!(
             address,
-            Pubkey::from_str("4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147")
-                .unwrap()
+            Pubkey::from_str("4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147").unwrap()
         );
         assert_eq!(bump, 255);
     }
@@ -88,13 +85,11 @@ mod test {
     #[test]
     fn test_get_counter_pubkey() {
         let pubkey = Counter::get_counter_pubkey(
-            &Pubkey::from_str("FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF")
-                .unwrap(),
+            &Pubkey::from_str("FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF").unwrap(),
         );
         assert_eq!(
             pubkey,
-            Pubkey::from_str("9JVaomeo7Ps8D41whGLkz1c1wzWGfKpk62Mopnf3B274")
-                .unwrap()
+            Pubkey::from_str("9JVaomeo7Ps8D41whGLkz1c1wzWGfKpk62Mopnf3B274").unwrap()
         );
     }
 }

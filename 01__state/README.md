@@ -18,23 +18,23 @@ YouTube link (in Russian): *work in progress*
 ### Instruction
 ```rust
 pub enum CounterInstruction {
-    /// Increment the counter.
-    /// Accounts expected:
-    /// 0. `[signer]` owner of the counter
+    /// Increment a counter.
+    /// Accounts:
+    /// 0. `[signer]` owner of a counter
     /// 1. `[writable]` counter_account, PDA
     /// 2. `[]` settings_account, PDA
     Inc,
 
-    /// Decrement the counter.
-    /// Accounts expected:
-    /// 0. `[signer]` owner the counter
+    /// Decrement a counter.
+    /// Accounts:
+    /// 0. `[signer]` owner of a counter
     /// 2. `[writable]` counter_account, PDA
     /// 2. `[]` settings_account, PDA
     Dec,
 
-    /// Update settings for the counter. Only admin can do it.
-    /// Accounts expected:
-    /// 0. `[signer, writable]` Admin of the counter
+    /// Update settings for counters. Only admin can do it.
+    /// Accounts:
+    /// 0. `[signer, writable]` Admin of counters
     /// 1. `[writable]` settings_account, PDA
     /// 2. `[]` Rent sysvar
     /// 3. `[]` System program
@@ -44,14 +44,15 @@ pub enum CounterInstruction {
 
 ### State
 ```rust
-/// Each user has his own counter account
+/// Each user has his own counter account.
 pub struct Counter {
     /// Increment this field every time by 1
     pub counter: u32,
 
-    /// Value of the counter
+    /// Value of a counter
     pub value: i64,
 }
+
 
 /// There is only one settings account. All counter accounts use it
 pub struct Settings {
@@ -67,13 +68,13 @@ pub struct Settings {
 ```
 
 
-### Localnet keys:
+### Accounts:
 ```
 program: 9onZvMzqAFzSHJrLNVWfqLRFFQ5ZCGzNXB4PBxmp6z5Y
 admin: EG7uy9FCe4AxL9AavEA1nXDfo2AoBo1ZtBCV224hmoub
 user: FKr2pLkJXFpnJf2sUtStVwDiQPq61rKngtXyhLw8SQbF
 settings: 4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147
-counter: 4voA9ct4uAJuBVLNfoaPiU1VgpatMpGKRLHfvP8CZ147
+counter: 9JVaomeo7Ps8D41whGLkz1c1wzWGfKpk62Mopnf3B274
 ```
 
 
@@ -94,6 +95,6 @@ $ make client
 
 ### Links:
 - https://docs.solana.com/developing/programming-model/overview
-- https://docs.rs/solana-program/1.7.0/solana_program/account_info/struct.AccountInfo.html
 - https://borsh.io
 - https://github.com/pabigot/buffer-layout
+- https://explorer.solana.com/address/9onZvMzqAFzSHJrLNVWfqLRFFQ5ZCGzNXB4PBxmp6z5Y?cluster=testnet

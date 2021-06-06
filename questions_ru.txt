@@ -54,3 +54,6 @@ pub mod entrypoint;
 
 27) Что за Xargo.toml?
 
+28) Что этот синтаксис значит?
+counter.serialize(&mut &mut counter_info.data.borrow_mut()[..]);
+

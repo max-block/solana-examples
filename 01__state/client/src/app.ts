@@ -36,15 +36,9 @@ export class App {
   settingsPubkey: PublicKey
 
   constructor() {
-    this.adminKeypair = App.readKeypairFromPath(
-      __dirname + "/../../localnet/admin.json"
-    )
-    this.userKeypair = App.readKeypairFromPath(
-      __dirname + "/../../localnet/user.json"
-    )
-    this.programKeypair = App.readKeypairFromPath(
-      __dirname + "/../../localnet/program.json"
-    )
+    this.adminKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/admin.json")
+    this.userKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/user.json")
+    this.programKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/program.json")
     this.connection = new Connection("http://localhost:8899", "confirmed")
     this.counterPubkey = new PublicKey(0)
     this.settingsPubkey = new PublicKey(0)
@@ -62,9 +56,7 @@ export class App {
         this.programKeypair.publicKey
       )
     )[0]
-    const res = await this.connection.getAccountInfo(
-      this.programKeypair.publicKey
-    )
+    const res = await this.connection.getAccountInfo(this.programKeypair.publicKey)
     if (!res) {
       console.error("Counter is not deployed. Deploy it first.")
       process.exit(1)
@@ -76,11 +68,7 @@ export class App {
     console.log("counter", this.settingsPubkey.toBase58())
   }
 
-  async updateCounterSettings(
-    admin: Uint8Array,
-    inc_step: number,
-    dec_step: number
-  ) {
+  async updateCounterSettings(admin: Uint8Array, inc_step: number, dec_step: number) {
     const updateSettingsIx = new TransactionInstruction({
       programId: this.programKeypair.publicKey,
       keys: [
@@ -97,10 +85,11 @@ export class App {
     })
 
     const tx = new Transaction().add(updateSettingsIx)
-    const txHash = await this.connection.sendTransaction(tx, [
-      this.userKeypair,
-      this.adminKeypair,
-    ])
+    const txHash = await this.connection.sendTransaction(
+      tx,
+      [this.userKeypair, this.adminKeypair],
+      { preflightCommitment: "max" }
+    )
     console.log("update settings tx", txHash)
     await delay(3000)
   }
@@ -125,9 +114,7 @@ export class App {
 
   async createCounterAndInc() {
     const data = encodeCounter(0, new BN(0))
-    const lamports = await this.connection.getMinimumBalanceForRentExemption(
-      data.length
-    )
+    const lamports = await this.connection.getMinimumBalanceForRentExemption(data.length)
     const createAccountIx = SystemProgram.createAccountWithSeed({
       fromPubkey: this.userKeypair.publicKey,
       basePubkey: this.userKeypair.publicKey,
@@ -153,9 +140,7 @@ export class App {
     })
 
     const tx = new Transaction().add(createAccountIx, incIx)
-    const res = await this.connection.sendTransaction(tx, [this.userKeypair], {
-      preflightCommitment: "confirmed",
-    })
+    const res = await this.connection.sendTransaction(tx, [this.userKeypair])
     console.log("create counter and inc tx", res)
     await delay(3000)
   }
@@ -176,9 +161,7 @@ export class App {
     })
 
     const tx = new Transaction().add(decIx)
-    const res = await this.connection.sendTransaction(tx, [this.userKeypair], {
-      preflightCommitment: "confirmed",
-    })
+    const res = await this.connection.sendTransaction(tx, [this.userKeypair])
     console.log("dec counter tx", res)
     await delay(3000)
   }

@@ -52,11 +52,7 @@ export function encodeUpdateSettingsIx(
   inc_step: number,
   dec_step: number
 ): Buffer {
-  const schema = lo.struct([
-    lo.seq(lo.u8(), 32, "admin"),
-    lo.u32("inc_step"),
-    lo.u32("dec_step"),
-  ])
+  const schema = lo.struct([lo.seq(lo.u8(), 32, "admin"), lo.u32("inc_step"), lo.u32("dec_step")])
   const b = Buffer.alloc(32 + 4 + 4)
   schema.encode({ admin, inc_step, dec_step }, b)
   return Buffer.from([CounterIxOrder.UpdateSettings, ...b])

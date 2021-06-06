@@ -15,23 +15,15 @@ use crate::{id, SETTINGS_SEED};
 pub struct Processor;
 
 impl Processor {
-    pub fn process(
-        _program_id: &Pubkey,
-        accounts: &[AccountInfo],
-        input: &[u8],
-    ) -> ProgramResult {
+    pub fn process(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
         msg!("counter: {:?}", input);
         let instruction = CounterInstruction::try_from_slice(input)?;
         match instruction {
             CounterInstruction::Inc => Self::process_inc(accounts),
             CounterInstruction::Dec => Self::process_dec(accounts),
-            CounterInstruction::UpdateSettings {
-                admin,
-                inc_step,
-                dec_step,
-            } => Self::process_update_settings(
-                accounts, admin, inc_step, dec_step,
-            ),
+            CounterInstruction::UpdateSettings { admin, inc_step, dec_step } => {
+                Self::process_update_settings(accounts, admin, inc_step, dec_step)
+            }
         }
     }
 
@@ -44,7 +36,6 @@ impl Processor {
 
         // Checks
         if !user_info.is_signer {
-            msg!("error: missing required signature");
             return Err(ProgramError::MissingRequiredSignature);
         }
         if !Counter::is_ok_counter_pubkey(user_info.key, counter_info.key) {
@@ -113,8 +104,7 @@ impl Processor {
         let rent_info = next_account_info(acc_iter)?;
         let system_program_info = next_account_info(acc_iter)?;
 
-        let (settings_pubkey, bump_seed) =
-            Settings::get_settings_pubkey_with_bump();
+        let (settings_pubkey, bump_seed) = Settings::get_settings_pubkey_with_bump();
         if settings_pubkey != *settings_info.key {
             return Err(ProgramError::InvalidArgument);
         }
@@ -125,16 +115,11 @@ impl Processor {
 
         if settings_info.data_is_empty() {
             msg!("Creating settings account");
-            let settings = Settings {
-                admin: admin_info.key.to_bytes(),
-                inc_step,
-                dec_step,
-            };
+            let settings = Settings { admin: admin_info.key.to_bytes(), inc_step, dec_step };
             let space = settings.try_to_vec()?.len();
             let rent = &Rent::from_account_info(rent_info)?;
             let lamports = rent.minimum_balance(space);
-            let signer_seeds: &[&[_]] =
-                &[SETTINGS_SEED.as_bytes(), &[bump_seed]];
+            let signer_seeds: &[&[_]] = &[SETTINGS_SEED.as_bytes(), &[bump_seed]];
             invoke_signed(
                 &system_instruction::create_account(
                     admin_info.key,
@@ -143,28 +128,20 @@ impl Processor {
                     space as u64,
                     &id(),
                 ),
-                &[
-                    admin_info.clone(),
-                    settings_info.clone(),
-                    system_program_info.clone(),
-                ],
+                &[admin_info.clone(), settings_info.clone(), system_program_info.clone()],
                 &[&signer_seeds],
             )?;
         }
 
-        let mut settings =
-            Settings::try_from_slice(&settings_info.data.borrow())?;
-        if settings.admin != admin_info.key.to_bytes()
-            && settings.admin != [0; 32]
-        {
+        let mut settings = Settings::try_from_slice(&settings_info.data.borrow())?;
+        if settings.admin != admin_info.key.to_bytes() && settings.admin != [0; 32] {
             return Err(CounterError::AdminRequired.into());
         }
         settings.admin = admin;
         settings.inc_step = inc_step;
         settings.dec_step = dec_step;
 
-        let _ =
-            settings.serialize(&mut &mut settings_info.data.borrow_mut()[..]);
+        let _ = settings.serialize(&mut &mut settings_info.data.borrow_mut()[..]);
         msg!("process_update_settings: done");
         Ok(())
     }
