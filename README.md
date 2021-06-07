@@ -42,7 +42,7 @@ Transfer and approve SPL tokens inside a Solana on-chain program
 - javascript @solana/spl-token
 - The community maintained Solana token registry
 
-YouTube link (in Russian): *work in progress*
+[Comments about this example on YouTube (in Russian)](https://www.youtube.com/watch?v=JwjZLwjY-4w)
 
 ---
 
