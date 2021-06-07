@@ -1,5 +1,5 @@
 # spl-examples
-List of on-chain Solana programs which demonstrate different aspects of Solana architecture.
+List of Solana on-chain programs which demonstrate different aspects of Solana architecture.
 
 ----
 
@@ -40,7 +40,7 @@ Transfer and approve SPL tokens inside a Solana on-chain program
 - SPL Token
 - SPL Associated Token Account Program
 - javascript @solana/spl-token
-- https://github.com/solana-labs/token-list
+- The community maintained Solana token registry
 
 YouTube link (in Russian): *work in progress*
 

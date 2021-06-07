@@ -1,6 +1,5 @@
 # Transfer lamports inside a Solana on-chain program 
 
-
 _Topics:_
 - Invoke system instructions inside on-chain programs
 - Cross-Program Invocations
