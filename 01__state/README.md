@@ -12,7 +12,7 @@ _Topics:_
 - Create accounts inside on-chain programs
 - Deploy on testnet and check it using Solana explorer
 
-YouTube link (in Russian): *work in progress*  
+[Comments about this example on YouTube (in Russian)](https://www.youtube.com/watch?v=uUfhqHBoQpU)  
 
 
 ### Instruction

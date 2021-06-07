@@ -1,5 +1,11 @@
 import "regenerator-runtime/runtime"
-import {Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction,} from "@solana/web3.js"
+import {
+  Connection,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js"
 import Wallet from "@project-serum/sol-wallet-adapter"
 import lo from "buffer-layout"
 import BN from "bn.js"
@@ -10,12 +16,11 @@ declare global {
   }
 }
 
-// const connection = new Connection("http://localhost:8899")
-const connection = new Connection("https://testnet.solana.com")
+const connection = new Connection("http://localhost:8899")
+// const connection = new Connection("https://testnet.solana.com")
+
 let solletWallet = new Wallet("https://www.sollet.io")
-solletWallet.on("connect", (publicKey) =>
-  console.log("sollet connected", publicKey.toBase58())
-)
+solletWallet.on("connect", (publicKey) => console.log("sollet connected", publicKey.toBase58()))
 
 export function connectPhantomWallet() {
   window.solana.on("connect", () => {
@@ -29,12 +34,8 @@ export async function connectSolletWallet() {
 }
 
 async function prepareTransaction(userPubkey: PublicKey): Promise<Transaction> {
-  const bobPubkey = new PublicKey(
-    "9C8ARBpAqcmoDfqZTDtvB1JgZC7gjvcq48xRJoR7Wpeq"
-  )
-  const programId = new PublicKey(
-    "Cf2FH5TEV6T511C4nJDyuyuaVc34vDA66rmmkwquyWeM"
-  )
+  const bobPubkey = new PublicKey("9C8ARBpAqcmoDfqZTDtvB1JgZC7gjvcq48xRJoR7Wpeq")
+  const programId = new PublicKey("Cf2FH5TEV6T511C4nJDyuyuaVc34vDA66rmmkwquyWeM")
 
   // encode 0.5 SOL as an input_data
   const data = Buffer.alloc(64)

@@ -4,8 +4,8 @@ localnet-validator:
 	solana-test-validator -r --ledger localnet/ledger
 
 localnet-init:
-	solana airdrop 1 localnet/alice.json -u localhost
-	solana airdrop 1 localnet/bob.json -u localhost
+	solana airdrop 10 localnet/alice.json -u localhost
+	solana airdrop 10 localnet/bob.json -u localhost
 
 deploy:
 	cd program; cargo build-bpf

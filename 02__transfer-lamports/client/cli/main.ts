@@ -16,12 +16,8 @@ function readKeypairFromPath(path: string): Keypair {
 }
 
 async function main() {
-  const programKeypair = readKeypairFromPath(
-    __dirname + "/../../localnet/program.json"
-  )
-  const aliceKeypair = readKeypairFromPath(
-    __dirname + "/../../localnet/alice.json"
-  )
+  const programKeypair = readKeypairFromPath(__dirname + "/../../localnet/program.json")
+  const aliceKeypair = readKeypairFromPath(__dirname + "/../../localnet/alice.json")
   const bobKeypair = readKeypairFromPath(__dirname + "/../../localnet/bob.json")
   const connection = new Connection("http://localhost:8899", "confirmed")
 
@@ -38,11 +34,7 @@ async function main() {
     programId: programKeypair.publicKey,
     data: data,
   })
-  const res = await sendAndConfirmTransaction(
-    connection,
-    new Transaction().add(ix),
-    [aliceKeypair]
-  )
+  const res = await sendAndConfirmTransaction(connection, new Transaction().add(ix), [aliceKeypair])
   console.log(res)
 }
 

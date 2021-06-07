@@ -16,7 +16,7 @@ It's a counter program. Each user has his own counter. There is one settings acc
 - Create accounts inside on-chain programs
 - Deploy on testnet and check it using Solana explorer
 
-YouTube link (in Russian): *work in progress*  
+[Comments about this example on YouTube (in Russian)](https://www.youtube.com/watch?v=uUfhqHBoQpU)  
 
 ---
 
@@ -39,7 +39,7 @@ Transfer and approve SPL tokens inside a Solana on-chain program
 *Topics:*
 - SPL Token
 - SPL Associated Token Account Program
-- @solana/spl-token
+- javascript @solana/spl-token
 - https://github.com/solana-labs/token-list
 
 YouTube link (in Russian): *work in progress*
@@ -50,4 +50,5 @@ YouTube link (in Russian): *work in progress*
 ### TODO:
 - Pseudo random
 - Python Solana client
+- Subscription on changes in Accounts on the client side    
 - Compare Solana vs Ethereum

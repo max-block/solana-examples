@@ -37,11 +37,6 @@ pub fn process_instruction(
         &system_instruction::transfer(alice_info.key, bob_info.key, amount),
         &[alice_info.clone(), bob_info.clone()],
     )?;
-    msg!(
-        "transfer {} lamports from {:?} to {:?}: done",
-        amount,
-        alice_info.key,
-        bob_info.key
-    );
+    msg!("transfer {} lamports from {:?} to {:?}: done", amount, alice_info.key, bob_info.key);
     Ok(())
 }

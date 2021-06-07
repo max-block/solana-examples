@@ -57,3 +57,4 @@ pub mod entrypoint;
 28) Что этот синтаксис значит?
 counter.serialize(&mut &mut counter_info.data.borrow_mut()[..]);
 
+29) Почему так много Vote транзакций?

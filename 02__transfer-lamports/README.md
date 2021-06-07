@@ -45,3 +45,9 @@ alice: CD6To88A4KrApbnDUkHrwpjMY5ufgPpVQzm9rRX5d3ro
 bob: 9C8ARBpAqcmoDfqZTDtvB1JgZC7gjvcq48xRJoR7Wpeq
 ```
 
+### Links:
+- https://docs.solana.com/developing/programming-model/calling-between-programs
+- https://github.com/project-serum/sol-wallet-adapter
+- https://docs.phantom.app
+
+
