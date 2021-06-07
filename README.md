@@ -29,7 +29,7 @@ _Topics:_
 - Privilege extension
 - Phantom and Sollet wallet integrations
 
-YouTube link (in Russian): *work in progress*
+[Comments about this example on YouTube (in Russian)](https://www.youtube.com/watch?v=sl8zY6bturs)  
 
 ---
 
