@@ -1,0 +1,22 @@
+[package]
+name = "counter"
+version = "0.1.0"
+authors = ["Max Block <maxblock@pm.me>"]
+edition = "2021"
+
+[features]
+no-entrypoint = []
+test-bpf = []
+
+[dependencies]
+borsh = "0.9.3"
+thiserror = "1.0.30"
+solana-program = "1.9.9"
+
+[dev-dependencies]
+solana-program-test = "1.9.9"
+solana-sdk = "1.9.9"
+
+
+[lib]
+crate-type = ["cdylib", "lib"]

@@ -1,0 +1,27 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier --write src"
+  },
+  "keywords": [],
+  "author": "Max Block",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/web3.js": "^1.35.1",
+    "buffer-layout": "^1.2.2"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/node": "^17.0.21",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 100
+  }
+}

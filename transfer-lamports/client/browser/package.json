@@ -1,0 +1,27 @@
+{
+  "name": "browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html --global main",
+    "prettier": "prettier --write src"
+  },
+  "keywords": [],
+  "author": "Max Block",
+  "license": "ISC",
+  "dependencies": {
+    "@project-serum/sol-wallet-adapter": "^0.2.6",
+    "@solana/web3.js": "^1.35.1",
+    "buffer-layout": "^1.2.2"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5",
+    "prettier": "^2.3.0",
+    "typescript": "^4.2.4"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 100
+  }
+}

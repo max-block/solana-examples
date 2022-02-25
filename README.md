@@ -3,7 +3,7 @@ List of Solana on-chain programs which demonstrate different aspects of Solana a
 
 ----
 
-## 01__state
+## state
 It's a counter program. Each user has his own counter. There is one settings account which only admin can manage.
 
 *Topics:*
@@ -20,7 +20,7 @@ It's a counter program. Each user has his own counter. There is one settings acc
 
 ---
 
-## 02__transfer-lamports
+## transfer-lamports
 Transfer lamports inside a Solana on-chain program
 
 _Topics:_
@@ -33,7 +33,7 @@ _Topics:_
 
 ---
 
-## 03__transfer-tokens
+## transfer-tokens
 Transfer and approve SPL tokens inside a Solana on-chain program
 
 *Topics:*

@@ -1,0 +1,23 @@
+localnet-validator:
+	solana-test-validator -r --ledger localnet/ledger
+
+localnet-init:
+	solana airdrop 1 CD6To88A4KrApbnDUkHrwpjMY5ufgPpVQzm9rRX5d3ro -ul
+	solana airdrop 1 CD6To88A4KrApbnDUkHrwpjMY5ufgPpVQzm9rRX5d3ro -ul
+	solana airdrop 1 2EheLY8aWQcKPsSXpTs7teiwtBume8gLRaFQzB4HHxJP -ul
+	spl-token create-token localnet/token.json --fee-payer localnet/alice.json -ul
+	spl-token create-account CZyEKArwVYSKkv9im3grGNXmggbPfS8YGUovBnzoKQ4s --owner localnet/alice.json -ul
+	spl-token create-account CZyEKArwVYSKkv9im3grGNXmggbPfS8YGUovBnzoKQ4s --owner localnet/bob.json -ul
+	spl-token mint CZyEKArwVYSKkv9im3grGNXmggbPfS8YGUovBnzoKQ4s 300 G6GTsFAnYP1PaNc1g36SF4iuEiosfTZZCWWdnCNxxA8d -ul # mint to alice 300 SPL
+
+localnet-state:
+	spl-token account-info --address G6GTsFAnYP1PaNc1g36SF4iuEiosfTZZCWWdnCNxxA8d -ul # alice
+	spl-token account-info --address 82SyqQyffa3yeUbuCfcfrHGg3LjdKr919aUqVT7uXkez -ul # bob
+	spl-token account-info --address Eau9odNYvqtAFmAVJx2wcH358gd4PAeshF1X8VEyMHWb -ul # carol
+
+deploy:
+	cd program; cargo build-bpf
+	solana program deploy program/target/deploy/program.so -u localhost --program-id localnet/program.json
+
+client:
+	cd client && npm install && ./node_modules/.bin/ts-node main.ts

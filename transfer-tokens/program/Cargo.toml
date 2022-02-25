@@ -1,0 +1,15 @@
+[package]
+name = "program"
+version = "0.1.0"
+authors = ["Max Block <maxblock@pm.me>"]
+edition = "2021"
+
+
+[dependencies]
+borsh = "0.9.3"
+solana-program = "1.9.9"
+spl-token = { version = "3.3.0", features = ["no-entrypoint"] }
+
+
+[lib]
+crate-type = ["cdylib", "lib"]
